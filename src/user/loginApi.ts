@@ -11,11 +11,11 @@ export function loginUser(user: User, onResult: SessionCallback, onError: ErrorC
             body: JSON.stringify(user),
         })
         .then(async (response) => {
+            console.log('🔍 Réponse complète du login:', response);
             if (response.ok) {
                 const session = await response.json() as Session;
-                sessionStorage.setItem('token', session.token);
-                sessionStorage.setItem('externalId', session.externalId);
-                sessionStorage.setItem('username', session.username || "");
+
+
                 onResult(session)
             } else {
                 const error = await response.json() as CustomError;

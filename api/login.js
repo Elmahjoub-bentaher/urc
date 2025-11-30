@@ -25,13 +25,13 @@ export default async function handler(request) {
         } else {
             await client.sql`update users set last_login = now() where user_id = ${rows[0].user_id}`;
             const token = crypto.randomUUID().toString();
-            const user = {id: rows[0].user_id, username: rows[0].username, email: rows[0].email, externalId: rows[0].external_id}
+            const user = {user_id: rows[0].user_id, username: rows[0].username, email: rows[0].email, externalId: rows[0].external_id}
             await redis.set(token, user, { ex: 3600 });
             const userInfo = {};
             userInfo[user.id] = user;
             await redis.hset("users", userInfo);
 
-            return new Response(JSON.stringify({token: token, username: username, externalId: rows[0].external_id, id: rows[0].user_id}), {
+            return new Response(JSON.stringify({token: token, username: username, externalId: rows[0].external_id, user_id: rows[0].user_id}), {
                 status: 200,
                 headers: {'content-type': 'application/json'},
             });
